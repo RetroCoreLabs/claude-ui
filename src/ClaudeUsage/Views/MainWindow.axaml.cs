@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
@@ -38,6 +39,21 @@ public partial class MainWindow : Window
                 Dispatcher.UIThread.Post(FitHeight, DispatcherPriority.Loaded);
             }
         };
+    }
+
+    // On Windows a minimised window leaves the taskbar and lives on as the
+    // tray icon; clicking the tray icon brings it back. Other systems keep
+    // the normal minimise, because a tray is not always present there.
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == WindowStateProperty &&
+            WindowState == WindowState.Minimized &&
+            OperatingSystem.IsWindows())
+        {
+            Hide();
+        }
     }
 
     protected override void OnOpened(EventArgs e)

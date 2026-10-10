@@ -115,6 +115,10 @@ The tray icon shows one limit as a number in that limit's colour. Clicking it
 brings the window to the front; its menu has **Open**, **Refresh** and **Exit**.
 Closing the window exits the app.
 
+On Windows, minimising the window hides it from the taskbar; the app keeps
+running as the tray icon, and a click on the icon brings the window back. On
+macOS and Linux the window minimises the normal way.
+
 ### How the "Time Left" bar is calculated
 
 The bar is the time until the reset as a share of the whole window.
