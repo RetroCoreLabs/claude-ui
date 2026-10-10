@@ -1,3 +1,4 @@
+using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -14,6 +15,15 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+
+        // "0.2.0+<commit>" becomes "Claude Usage v0.2.0".
+        var version = typeof(MainWindow).Assembly
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+            .Split('+')[0];
+        if (!string.IsNullOrEmpty(version))
+        {
+            Title = $"Claude Usage v{version}";
+        }
     }
 
     protected override void OnDataContextChanged(EventArgs e)
