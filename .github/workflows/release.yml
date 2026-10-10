@@ -1,0 +1,78 @@
+name: Release
+
+# Runs when a tag such as v0.1.0 is pushed. Builds a self-contained
+# single-file program for each system and attaches them to a GitHub release.
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish ${{ matrix.rid }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        rid: [linux-x64, linux-arm64, win-x64, win-arm64, osx-x64, osx-arm64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Publish
+        run: >
+          dotnet publish src/ClaudeUsage/ClaudeUsage.csproj
+          -c Release
+          -r ${{ matrix.rid }}
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:DebugType=none
+          -p:Version=${GITHUB_REF_NAME#v}
+          -o publish/ClaudeUsage-${{ matrix.rid }}
+      - name: Remove debug symbol files
+        run: find publish -name '*.pdb' -delete
+      - name: Add licence and readme
+        run: cp LICENSE README.md publish/ClaudeUsage-${{ matrix.rid }}/
+      - name: Pack (zip for Windows)
+        if: startsWith(matrix.rid, 'win-')
+        working-directory: publish
+        run: zip -r ClaudeUsage-${GITHUB_REF_NAME}-${{ matrix.rid }}.zip ClaudeUsage-${{ matrix.rid }}
+      - name: Pack (tar.gz for Linux and macOS)
+        if: ${{ !startsWith(matrix.rid, 'win-') }}
+        working-directory: publish
+        run: tar -czf ClaudeUsage-${GITHUB_REF_NAME}-${{ matrix.rid }}.tar.gz ClaudeUsage-${{ matrix.rid }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ClaudeUsage-${{ matrix.rid }}
+          path: |
+            publish/*.zip
+            publish/*.tar.gz
+          if-no-files-found: error
+
+  release:
+    name: Create release
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Checksums
+        working-directory: dist
+        run: sha256sum * > SHA256SUMS.txt
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >
+          gh release create "$GITHUB_REF_NAME" dist/*
+          --repo "$GITHUB_REPOSITORY"
+          --title "Claude Usage $GITHUB_REF_NAME"
+          --generate-notes
