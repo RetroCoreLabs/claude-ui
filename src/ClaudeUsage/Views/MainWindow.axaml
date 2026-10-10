@@ -65,6 +65,10 @@
       <Setter Property="FontWeight" Value="Bold" />
       <Setter Property="HorizontalAlignment" Value="Center" />
     </Style>
+    <Style Selector="TextBlock.big.time">
+      <Setter Property="FontSize" Value="30" />
+      <Setter Property="Margin" Value="0,7,0,7" />
+    </Style>
     <Style Selector="ProgressBar">
       <Setter Property="Height" Value="10" />
       <Setter Property="MinHeight" Value="10" />
@@ -132,7 +136,7 @@
                           Background="{StaticResource CardBorderBrush}" />
                   <StackPanel Grid.Column="2" Spacing="4">
                     <TextBlock Classes="label" Text="Time Left" />
-                    <TextBlock Classes="big" Text="{Binding TimeLeftText}"
+                    <TextBlock Classes="big time" Text="{Binding TimeLeftText}"
                                Foreground="{StaticResource TimeBrush}" />
                   </StackPanel>
                 </Grid>
@@ -151,7 +155,7 @@
 
                 <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
                   <TextBlock Classes="muted" Text="{Binding SecondaryText}" />
-                  <TextBlock Grid.Column="1" Text="{Binding CountdownText}"
+                  <TextBlock Grid.Column="1" Text="{Binding ResetAtText}"
                              FontSize="13" FontWeight="SemiBold" />
                 </Grid>
 

@@ -44,7 +44,7 @@ weekly usage limits, how much time is left in each window, and when they reset.
 | | |
 | --- | --- |
 | :bar_chart: **One card per limit** | Current session, current week (all models), and one card for each model-specific weekly limit. |
-| :hourglass_flowing_sand: **Time left** | Percent of the time window that is left, the local reset time, and a live countdown. |
+| :hourglass_flowing_sand: **Time left** | Days, hours and minutes until the reset, a bar for the share of the window that is left, and the local reset time. |
 | :traffic_light: **Colour by severity** | Green, amber or red, taken from the severity the server reports for each limit. |
 | :arrows_counterclockwise: **Remaining or used** | Choose which of the two the big number and the bar show. |
 | :pushpin: **Tray icon** | A coloured number in the system tray, redrawn on every update, with all limits in the tooltip. |
@@ -88,8 +88,10 @@ Start the app. The window opens tall enough to show every card.
 Each card shows:
 
 - the **remaining** or the **used** percent of the limit, as a number and a bar
-- **Time Left**: the percent of the limit's time window that is still ahead
-- the local **reset time** and a countdown to it
+- **Time Left**: the time until the reset, as days, hours and minutes
+  (`4d 3h 12m`), hours and minutes (`4h 29m`) or minutes (`29m`), and a bar
+  showing how much of the limit's time window is still ahead
+- **Resets at**: the local reset time, with the date when it is not today
 
 The **Refresh** button fetches at once. The **cogwheel** opens the settings.
 The line at the bottom shows the time of the last update, or the reason a fetch
@@ -99,7 +101,9 @@ The tray icon shows one limit as a number in that limit's colour. Clicking it
 brings the window to the front; its menu has **Open**, **Refresh** and **Exit**.
 Closing the window exits the app.
 
-### How "Time Left" is calculated
+### How the "Time Left" bar is calculated
+
+The bar is the time until the reset as a share of the whole window.
 
 | Limit | Window start | Window end |
 | --- | --- | --- |

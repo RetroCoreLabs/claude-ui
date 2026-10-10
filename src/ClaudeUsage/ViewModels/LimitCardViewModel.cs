@@ -70,9 +70,14 @@ public sealed class LimitCardViewModel : ViewModelBase
     // One line for the tray tooltip.
     public string ShortText => _showUsed ? $"{Title}: {UsedPercent:0}% used" : $"{Title}: {RemainingPercent:0}% left";
 
+    // Share of the time window that is still ahead, 0..100, for the bar.
     public double TimeLeftPercent { get; private set; }
+
+    // Time until the reset, for example "4d 3h 12m", "4h 29m" or "29m".
     public string TimeLeftText { get; private set; } = "-";
-    public string CountdownText { get; private set; } = "";
+
+    // "Resets at 20:00", or "Resets at 12/10 20:00" when the reset is not today.
+    public string ResetAtText { get; private set; } = "";
 
     // Recomputes the values that change as the clock moves.
     public void Tick(DateTimeOffset now)
@@ -91,14 +96,17 @@ public sealed class LimitCardViewModel : ViewModelBase
         if (_window is { } window)
         {
             TimeLeftPercent = Math.Clamp(left / window * 100, 0, 100);
-            TimeLeftText = $"{TimeLeftPercent:0}%";
         }
 
-        CountdownText = left == TimeSpan.Zero ? "Resetting now" : "Resets in " + Format(left);
+        TimeLeftText = Format(left);
+
+        var resetLocal = resetsAt.ToLocalTime();
+        var format = resetLocal.Date == now.ToLocalTime().Date ? "HH:mm" : "dd/MM HH:mm";
+        ResetAtText = "Resets at " + resetLocal.ToString(format, CultureInfo.InvariantCulture);
 
         Raise(nameof(TimeLeftPercent));
         Raise(nameof(TimeLeftText));
-        Raise(nameof(CountdownText));
+        Raise(nameof(ResetAtText));
     }
 
     private static string TitleFor(LimitEntry entry) => entry.Kind switch
@@ -131,18 +139,19 @@ public sealed class LimitCardViewModel : ViewModelBase
         }
     }
 
+    // Days, hours and minutes; leading parts that are zero are left out.
     private static string Format(TimeSpan left)
     {
         if (left.TotalDays >= 1)
         {
-            return $"{(int)left.TotalDays}d {left.Hours}h";
+            return $"{(int)left.TotalDays}d {left.Hours}h {left.Minutes}m";
         }
 
         if (left.TotalHours >= 1)
         {
-            return $"{(int)left.TotalHours}h {left.Minutes:00}m";
+            return $"{left.Hours}h {left.Minutes}m";
         }
 
-        return $"{left.Minutes}m {left.Seconds:00}s";
+        return left.TotalMinutes >= 1 ? $"{left.Minutes}m" : "<1m";
     }
 }
