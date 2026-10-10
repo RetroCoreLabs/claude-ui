@@ -68,6 +68,20 @@ weekly usage limits, how much time is left in each window, and when they reset.
 
 Each release also has a `SHA256SUMS.txt` to check the downloads against.
 
+**Linux:** the download also holds `install.sh`. Running it puts the program,
+its icon and a menu entry under `~/.local/share`, so the app appears in the
+application menu with its icon. Nothing goes outside the home folder and no
+root is needed. `./install.sh --uninstall` removes it again.
+
+```
+tar -xzf ClaudeUsage-<version>-linux-x64.tar.gz
+cd ClaudeUsage-linux-x64
+./install.sh
+```
+
+Under WSL the window frame is drawn by WSLg, which shows its own default
+picture in the frame's top-left corner whatever icon the app has.
+
 **macOS:** the program is not signed or notarised. If macOS refuses to start
 it, remove the quarantine mark once:
 
@@ -283,6 +297,7 @@ Every push and pull request is built on Windows, macOS and Linux by the
 | `src/ClaudeUsage/Views/MainWindow.axaml` | The window and card design |
 | `src/ClaudeUsage/App.axaml.cs` | Tray icon, its menu, start-up |
 | `assets/icon.svg` | Source of the app icon |
+| `packaging/linux/` | Menu entry, icons and `install.sh` for Linux |
 | `.github/workflows/` | CI and release builds |
 
 Built with [Avalonia](https://avaloniaui.net/) 12 and C#.

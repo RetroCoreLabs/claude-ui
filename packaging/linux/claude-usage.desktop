@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Claude Usage
+GenericName=Usage Monitor
+Comment=Shows Claude usage limits, time left and reset times
+Exec=__EXEC__
+Icon=claude-usage
+Terminal=false
+StartupWMClass=claude-usage
+Categories=Utility;

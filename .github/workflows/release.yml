@@ -38,6 +38,9 @@ jobs:
         run: find publish -name '*.pdb' -delete
       - name: Add licence and readme
         run: cp LICENSE README.md publish/ClaudeUsage-${{ matrix.rid }}/
+      - name: Add Linux menu entry, icons and install script
+        if: startsWith(matrix.rid, 'linux-')
+        run: cp -r packaging/linux/. publish/ClaudeUsage-${{ matrix.rid }}/
       - name: Pack (zip for Windows)
         if: startsWith(matrix.rid, 'win-')
         working-directory: publish

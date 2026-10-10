@@ -4,7 +4,7 @@
         x:Class="ClaudeUsage.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="Claude Usage"
-        Icon="/Assets/icon.ico"
+        Icon="/Assets/icon-512.png"
         Width="460" SizeToContent="Height"
         MinWidth="380" MinHeight="200"
         FontFamily="fonts:Inter#Inter">
