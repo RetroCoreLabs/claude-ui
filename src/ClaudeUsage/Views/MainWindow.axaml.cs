@@ -60,7 +60,7 @@ public partial class MainWindow : Window
     {
         base.OnOpened(e);
 
-        // Never grow taller than the screen; the card list scrolls instead.
+        // Never grow taller than the screen; the content is scaled down to fit instead.
         if (Screens.ScreenFromWindow(this) is { } screen)
         {
             MaxHeight = screen.WorkingArea.Height / screen.Scaling;

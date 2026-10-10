@@ -6,7 +6,7 @@
         Title="Claude Usage"
         Icon="/Assets/icon-512.png"
         Width="460" SizeToContent="Height"
-        MinWidth="380" MinHeight="200"
+        MinWidth="200" MinHeight="120"
         FontFamily="fonts:Inter#Inter">
 
   <Window.Resources>
@@ -80,7 +80,11 @@
     </Style>
   </Window.Styles>
 
-  <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="18">
+  <!-- Everything is laid out at a fixed width of 460 (424 plus the margins) and
+       the Viewbox scales the result to the window, so text, bars and spacing
+       grow and shrink together when the window is resized. -->
+  <Viewbox Stretch="Uniform">
+  <Grid RowDefinitions="Auto,Auto,*,Auto" Width="424" Margin="18">
 
     <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" Margin="2,0,2,16">
       <TextBlock Text="Claude Usage" FontSize="22" FontWeight="Bold" VerticalAlignment="Center" />
@@ -169,4 +173,5 @@
     <TextBlock Grid.Row="3" Classes="muted" Text="{Binding StatusText}"
                TextWrapping="Wrap" Margin="2,8,2,0" />
   </Grid>
+  </Viewbox>
 </Window>
