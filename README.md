@@ -48,6 +48,8 @@ weekly usage limits, how much time is left in each window, and when they reset.
 | :traffic_light: **Colour by severity** | Green, amber or red, taken from the severity the server reports for each limit. |
 | :arrows_counterclockwise: **Remaining or used** | Choose which of the two the big number and the bar show. |
 | :pushpin: **Tray icon** | A coloured number in the system tray, redrawn on every update, with all limits in the tooltip. |
+| :mag: **Scales with the window** | Resize the window and the text and bars scale with it. |
+| :left_right_arrow: **Stacked or side by side** | One button switches the cards between a column and a row. |
 | :gear: **Settings in the window** | Cogwheel button; changes apply at once and are saved. |
 | :shield: **Polite to the server** | Backs off after a rate-limit reply and shows the last known values meanwhile. |
 | :package: **Nothing to install** | One self-contained file per system. No runtime needed. |
@@ -97,7 +99,11 @@ xattr -d com.apple.quarantine ClaudeUsage
 
 ## Use
 
-Start the app. The window opens tall enough to show every card.
+Start the app. The window opens large enough to show every card.
+
+Resize the window to scale it: the text, the bars and the spacing grow and
+shrink with the window, so it can be made small or large. The window title
+shows the version, for example `Claude Usage v0.3.0`.
 
 Each card shows:
 
@@ -107,7 +113,10 @@ Each card shows:
   showing how much of the limit's time window is still ahead
 - **Resets at**: the local reset time, with the date when it is not today
 
-The **Refresh** button fetches at once. The **cogwheel** opens the settings.
+The **Refresh** button fetches at once. The **columns button** next to it
+switches between cards stacked on top of each other and cards side by side; the
+window changes size to fit, and the choice is remembered. The **cogwheel** opens
+the settings.
 The line at the bottom shows the time of the last update, or the reason a fetch
 failed.
 
@@ -151,7 +160,7 @@ application data folder:
 
 | File | Contents |
 | --- | --- |
-| `settings.json` | The three settings above. Created with the defaults on first start. |
+| `settings.json` | The three settings above and the card layout. Created with the defaults on first start. |
 | `last-usage.json` | The last good reply from the server, when it was fetched, and the end time of a rate-limit block if one is active. |
 
 Neither file ever contains your token.
@@ -162,7 +171,8 @@ Neither file ever contains your token.
 {
   "refreshSeconds": 300,
   "trayLimit": "weekly_all",
-  "displayMode": "remaining"
+  "displayMode": "remaining",
+  "layout": "vertical"
 }
 ```
 
@@ -171,6 +181,7 @@ Neither file ever contains your token.
 | `refreshSeconds` | Seconds between fetches. `0` fetches only when **Refresh** is pressed. Values from 1 to 4 are raised to 5. |
 | `trayLimit` | `session`, `weekly_all`, `weekly_scoped`, or `lowest` for whichever limit has the least remaining. |
 | `displayMode` | `remaining` or `used`. |
+| `layout` | `vertical` for cards stacked on top of each other, `horizontal` for cards side by side. Set by the columns button. |
 
 ## Where the app finds your login
 
@@ -280,8 +291,8 @@ packs them, writes `SHA256SUMS.txt` and creates the GitHub release with
 generated notes.
 
 ```
-git tag v0.1.0
-git push origin v0.1.0
+git tag v0.3.0
+git push origin v0.3.0
 ```
 
 Every push and pull request is built on Windows, macOS and Linux by the

@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using Avalonia.Layout;
 using Avalonia.Threading;
 using ClaudeUsage.Models;
 using ClaudeUsage.Services;
@@ -139,6 +140,26 @@ public sealed class MainWindowViewModel : ViewModelBase
         get => _isSettingsOpen;
         set => Set(ref _isSettingsOpen, value);
     }
+
+    // True when the cards lie side by side, false when they are stacked.
+    public bool IsHorizontal
+    {
+        get => _settings.IsHorizontal;
+        set
+        {
+            if (value == _settings.IsHorizontal)
+            {
+                return;
+            }
+
+            _settings.Layout = value ? AppSettings.LayoutHorizontal : AppSettings.LayoutVertical;
+            Raise(nameof(IsHorizontal));
+            Raise(nameof(CardOrientation));
+            SaveSettings();
+        }
+    }
+
+    public Orientation CardOrientation => IsHorizontal ? Orientation.Horizontal : Orientation.Vertical;
 
     public string StatusText
     {

@@ -12,6 +12,9 @@ public sealed class AppSettings
     public const string DisplayRemaining = "remaining";
     public const string DisplayUsed = "used";
 
+    public const string LayoutVertical = "vertical";
+    public const string LayoutHorizontal = "horizontal";
+
     private static readonly JsonSerializerOptions WriteOptions = new() { WriteIndented = true };
 
     // Seconds between fetches. 0 means fetch only when Refresh is pressed.
@@ -31,6 +34,14 @@ public sealed class AppSettings
 
     [JsonIgnore]
     public bool ShowUsed => DisplayMode == DisplayUsed;
+
+    // Whether the cards are stacked on top of each other ("vertical") or
+    // placed side by side ("horizontal").
+    [JsonPropertyName("layout")]
+    public string Layout { get; set; } = LayoutVertical;
+
+    [JsonIgnore]
+    public bool IsHorizontal => Layout == LayoutHorizontal;
 
     // Null when refresh is manual only.
     [JsonIgnore]

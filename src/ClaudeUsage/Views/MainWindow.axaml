@@ -5,7 +5,7 @@
         x:DataType="vm:MainWindowViewModel"
         Title="Claude Usage"
         Icon="/Assets/icon-512.png"
-        Width="460" SizeToContent="Height"
+        Width="460" Height="600"
         MinWidth="200" MinHeight="120"
         FontFamily="fonts:Inter#Inter">
 
@@ -80,24 +80,31 @@
     </Style>
   </Window.Styles>
 
-  <!-- Everything is laid out at a fixed width of 460 (424 plus the margins) and
-       the Viewbox scales the result to the window, so text, bars and spacing
+  <!-- Everything is laid out at a fixed width (424 per card plus the margins;
+       the code-behind widens it for the side by side layout) and the Viewbox
+       scales the result to the window, so text, bars and spacing
        grow and shrink together when the window is resized. -->
   <Viewbox Stretch="Uniform">
-  <Grid RowDefinitions="Auto,Auto,*,Auto" Width="424" Margin="18">
+  <Grid x:Name="Root" RowDefinitions="Auto,Auto,*,Auto" Width="424" Margin="18">
 
-    <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" Margin="2,0,2,16">
+    <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto,Auto" Margin="2,0,2,16">
       <TextBlock Text="Claude Usage" FontSize="22" FontWeight="Bold" VerticalAlignment="Center" />
       <Button Grid.Column="1" Content="Refresh" Click="OnRefreshClick"
               IsEnabled="{Binding !IsBusy}" CornerRadius="8" Padding="14,6" />
-      <ToggleButton Grid.Column="2" IsChecked="{Binding IsSettingsOpen}"
+      <ToggleButton Grid.Column="2" IsChecked="{Binding IsHorizontal}"
+                    ToolTip.Tip="Cards side by side" CornerRadius="8" Padding="8,6" Margin="8,0,0,0">
+        <Path Width="18" Height="18" Stretch="Uniform" Fill="{StaticResource TextBrush}"
+              Data="M2,3 H6 V17 H2 Z M8,3 H12 V17 H8 Z M14,3 H18 V17 H14 Z" />
+      </ToggleButton>
+      <ToggleButton Grid.Column="3" IsChecked="{Binding IsSettingsOpen}"
                     ToolTip.Tip="Settings" CornerRadius="8" Padding="8,6" Margin="8,0,0,0">
         <Path Width="18" Height="18" Stretch="Uniform" Fill="{StaticResource TextBrush}"
               Data="F0 M19.43,10.40 L22.41,10.60 L22.41,13.40 L19.43,13.60 L18.38,16.12 L20.35,18.37 L18.37,20.35 L16.12,18.38 L13.60,19.43 L13.40,22.41 L10.60,22.41 L10.40,19.43 L7.88,18.38 L5.63,20.35 L3.65,18.37 L5.62,16.12 L4.57,13.60 L1.59,13.40 L1.59,10.60 L4.57,10.40 L5.62,7.88 L3.65,5.63 L5.63,3.65 L7.88,5.62 L10.40,4.57 L10.60,1.59 L13.40,1.59 L13.60,4.57 L16.12,5.62 L18.37,3.65 L20.35,5.63 L18.38,7.88 Z M15.5,12 A3.5,3.5 0 1 0 8.5,12 A3.5,3.5 0 1 0 15.5,12 Z" />
       </ToggleButton>
     </Grid>
 
-    <Border Grid.Row="1" Classes="card" IsVisible="{Binding IsSettingsOpen}">
+    <Border Grid.Row="1" Classes="card" IsVisible="{Binding IsSettingsOpen}"
+            Width="424" HorizontalAlignment="Left">
       <StackPanel Spacing="12">
         <TextBlock Classes="title" Text="Settings" />
         <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto">
@@ -118,10 +125,15 @@
     </Border>
 
     <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-      <ItemsControl ItemsSource="{Binding Limits}">
+      <ItemsControl ItemsSource="{Binding Limits}" Margin="0,0,0,14">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="{Binding CardOrientation}" Spacing="14" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
           <DataTemplate x:DataType="vm:LimitCardViewModel">
-            <Border Classes="card">
+            <Border Classes="card" Width="424" Margin="0">
               <StackPanel Spacing="12">
 
                 <Grid ColumnDefinitions="*,Auto">
